@@ -1,0 +1,16 @@
+<#7>
+Parameters file for DYRESM version 3.1
+    0.0013                     # <autoCal> bulk aerodynamic mmt. transport coeff.
+    0.08                       # <autoCal> mean albedo of water
+    0.96                       # <autoCal> emissivity of a water surface (Imberger & Patterson [1981,p316])
+    3.0                        # <autoCal> critical wind speed [ms^-1]
+    0                          # <autoCal> time of day for output of results [s] aftermidnight
+    0.006                      # <autoCal> bubbler entrainment coefficient (privc omm Imberger 2000)
+    0.083                      # <autoCal> buoyant plume entrainment coeff. (Fischer et al., 1979)
+    0.08                       # <autoCal> shear production efficiency (eta_K)
+    0.2                        # <autoCal> potential energy mixing efficiency (eta_P)
+    0.4                        # <autoCal> wind stirring efficiency (eta_S)
+    1.0E+7                     # <autoCal> effective surface area coeff. (Yeates et al.)
+    1.4E-06                    # <autoCal> bbl dissipation coeff. (Yeates et al.)
+    200                        # <autoCal> vertical mixing coeff. (Yeates et al.)
+==========================================================================================

@@ -1,0 +1,141 @@
+&glm_setup
+   sim_name = 'GLMSimulation'
+   max_layers = 145
+   min_layer_vol = 0.025
+   min_layer_thick = 0.2
+   max_layer_thick = 1
+   density_model = 1
+   non_avg = .true.
+/
+&mixing
+   coef_mix_conv = 0.143733
+   coef_wind_stir = 0.262607
+   coef_mix_shear = 0.14877
+   coef_mix_turb = 0.480186
+   coef_mix_KH = 0.3
+   coef_mix_hyp = 0.714929
+   deep_mixing = .true.
+   coef_mix_shreq = 0
+/
+&wq_setup
+   wq_lib = 'aed2'
+   wq_nml_file = 'aed2/aed2.nml'
+   ode_method = 1
+   split_factor = 1
+   bioshade_feedback = .true.
+   repair_state = .true.
+/
+&morphometry
+   lake_name = 'rotoehu'
+   latitude = -38.01435
+   longitude = 176.528
+   base_elev = 280.27
+   crest_elev = 307.07
+   bsn_len = 3221.2
+   bsn_wid = 3197.4
+   bsn_vals = 64
+   H = 280.27, 280.97, 281.97, 282.97, 283.47, 283.97, 284.47, 284.97, 285.47, 285.97, 286.47, 286.97, 287.47, 287.97, 288.47, 288.97, 289.47, 289.97, 290.47, 290.97, 291.47, 291.97, 292.47, 292.97, 293.47, 293.97, 294.47, 294.97, 295.47, 295.97, 296.47, 296.97, 297.47, 297.97, 298.17, 298.37, 298.57, 298.77, 298.97, 299.17, 299.37, 299.57, 299.77, 299.97, 300.17, 300.37, 300.57, 300.77, 300.97, 301.17, 301.37, 301.57, 301.77, 301.97, 302.17, 302.37, 302.57, 302.77, 302.97, 303.07, 304.07, 305.07, 306.07, 307.07
+   A = 0, 18495.52, 697672.32, 2229276.75, 2929998.64, 3614563.65, 4071531.15, 4332980.61, 4533492.1, 4703838.43, 4844466.18, 4977205.38, 5107400.59, 5238276.37, 5390903.57, 5582072.32, 5788759.28, 5992834.43, 6236342.35, 6536163.82, 6821499.06, 7041266.46, 7236395.18, 7440145.79, 7638899.2, 7813539.84, 7941337.65, 7963118.59, 7964807.31, 7965079.52, 7965172.59, 7965205.58, 7965215.92, 7965228, 7965228, 7965229.57, 7965232.77, 7965235.97, 7965237.58, 7965239.18, 7965240.78, 7965242.38, 7965243.98, 7965244, 7965244, 7965244, 7965244, 7965244, 7965244, 7965244, 7965244, 7965244, 7965244, 7965244, 7965244, 7965244, 7965244, 7965244, 7965248, 8761772.8, 17523545.6, 26285318.4, 35047091.2, 43808864
+/
+&time
+   timefmt = 2
+   start = '2010-07-02 00:00:00'
+   stop = '2023-06-30 00:00:00'
+   dt = 3600
+   num_days = 200
+/
+&output
+   out_dir = 'output'
+   out_fn = 'output'
+   nsave = 24
+   csv_lake_fname = 'lake'
+   csv_point_nlevs = 1
+   csv_point_fname = 'WQ_'
+   csv_point_at = 2
+   csv_point_nvars = 2
+   csv_point_vars = 'temp','salt'
+/
+&init_profiles
+   lake_depth = 22.7
+   num_depths = 2
+   the_depths = 0, 22.7
+   the_temps = 10, 10
+   the_sals = 0, 0
+/
+&meteorology
+   met_sw = .true.
+   lw_type = 'LW_IN'
+   rain_sw = .false.
+   atm_stab = 0
+   albedo_mode = 1
+   cloud_mode = 2
+   fetch_mode = 0
+   subdaily = .false.
+   meteo_fl = 'bcs/meteo_glm.csv'
+   wind_factor = 1
+   sw_factor = 1
+   lw_factor = 1
+   at_factor = 1
+   rh_factor = 1
+   rain_factor = 1
+   ce = 0.0013
+   ch = 0.0013
+   cd = 0.0013
+/
+&light
+   light_mode = 0
+   n_bands = 4
+   light_extc = 1, 0.5, 2, 4
+   energy_frac = 0.51, 0.45, 0.035, 0.005
+   Benthic_Imin = 10
+   Kw = 0.276807
+/
+&bird_model
+   AP = 973
+   Oz = 0.279
+   WatVap = 1.1
+   AOD500 = 0.033
+   AOD380 = 0.038
+   Albedo = 0.2
+/
+&inflow
+   num_inflows = 4
+   names_of_strms = 'NZS4079511','NZS4081174','lumped','precip'
+   strm_hf_angle = 80, 80, 80, 80
+   strmbd_slope = 0.5, 0.5, 0.5, 0.5
+   strmbd_drag = 0.016, 0.016, 0.016, 0.016
+   inflow_factor = 1, 1, 1, 1
+   inflow_fl = 'bcs/inflow_NZS4079511.csv','bcs/inflow_NZS4081174.csv','bcs/inflow_lumped.csv','bcs/inflow_precip.csv'
+   inflow_varnum = 19
+   inflow_vars = 'flow','temp','salt','OXY_oxy','PHS_frp','OGM_dop','OGM_pop','PHS_frp_ads','NIT_amm','NIT_nit','OGM_don','OGM_pon','OGM_doc','OGM_poc','SIL_rsi','PHY_cyano','PHY_green','PHY_diatom','NCS_ss1'
+   coef_inf_entrain = 0
+/
+&outflow
+   num_outlet = 1
+   outlet_type = 2
+   flt_off_sw = .true.
+   outl_elvs = 25.8
+   bsn_len_outl = 6704.89
+   bsn_wid_outl = 6655.35
+   outflow_fl = 'bcs/outflow_wbal.csv'
+   outflow_factor = 1
+   seepage = .true.
+   seepage_rate = 0
+/
+&sediment
+   sed_heat_Ksoil = 1.2
+   sed_temp_depth = 0.2
+   sed_temp_mean = 10
+   sed_temp_amplitude = 4
+   sed_temp_peak_doy = 10
+   benthic_mode = 2
+   n_zones = 1
+   zone_heights = 0.7
+   sed_reflectivity = 0.1
+   sed_roughness = 0.1
+/
+&snowice
+   snow_albedo_factor = 1
+   snow_rho_max = 300
+   snow_rho_min = 50
+/

@@ -1,0 +1,141 @@
+&glm_setup
+   sim_name = 'GLMSimulation'
+   max_layers = 225
+   min_layer_vol = 0.025
+   min_layer_thick = 0.2
+   max_layer_thick = 1
+   density_model = 1
+   non_avg = .true.
+/
+&mixing
+   coef_mix_conv = 0.114771
+   coef_wind_stir = 0.21584
+   coef_mix_shear = 0.162418
+   coef_mix_turb = 0.387681
+   coef_mix_KH = 0.3
+   coef_mix_hyp = 0.729132
+   deep_mixing = .true.
+   coef_mix_shreq = 0
+/
+&wq_setup
+   wq_lib = 'aed2'
+   wq_nml_file = 'aed2/aed2.nml'
+   ode_method = 1
+   split_factor = 1
+   bioshade_feedback = .true.
+   repair_state = .true.
+/
+&morphometry
+   lake_name = 'okareka'
+   latitude = -38.17118
+   longitude = 176.361
+   base_elev = 316.58
+   crest_elev = 359.4
+   bsn_len = 2091.4
+   bsn_wid = 2079.2
+   bsn_vals = 80
+   H = 316.58, 317.3, 318.3, 319.3, 320.3, 321.3, 322.3, 323.3, 324.3, 325.3, 326.3, 327.3, 328.3, 329.3, 330.3, 331.3, 332.3, 333.3, 334.3, 335.3, 335.8, 336.3, 336.8, 337.3, 337.8, 338.3, 338.8, 339.3, 339.8, 340.3, 340.8, 341.3, 341.8, 342.3, 342.8, 343.3, 343.8, 344.3, 344.8, 345.3, 345.8, 346.3, 346.8, 347.3, 347.8, 348.3, 348.8, 349.3, 349.8, 350.3, 350.5, 350.7, 350.9, 351.1, 351.3, 351.5, 351.7, 351.9, 352.1, 352.3, 352.5, 352.7, 352.9, 353.1, 353.3, 353.5, 353.7, 353.9, 354.1, 354.3, 354.5, 354.7, 354.9, 355.1, 355.3, 355.4, 356.4, 357.4, 358.4, 359.4
+   A = 0, 29916.64, 78068, 145163.84, 252903.04, 446522.72, 719348.8, 953840, 1104676.16, 1202847.68, 1308545.6, 1411679.2, 1487791.52, 1548863.2, 1606345.12, 1668072.48, 1732785.6, 1803181.44, 1885203.68, 1957204.16, 1993084.32, 2028644.16, 2062465.92, 2095182.4, 2128323.04, 2161703.04, 2195665.44, 2229895.68, 2264053.6, 2298153.12, 2331694.24, 2364166.08, 2395476.8, 2425871.84, 2456711.52, 2489460, 2524034.88, 2559104.48, 2594456.96, 2630762.24, 2668571.04, 2707385.6, 2746330.88, 2784737.28, 2822359.52, 2860953.44, 2906927.52, 2961918.88, 3014849.92, 3062511.36, 3081368.96, 3100365.76, 3119455.36, 3138688.8, 3159216.8, 3179744.8, 3204688.8, 3232576.8, 3260083.36, 3284156.96, 3308230.56, 3324975.52, 3336834.72, 3347989.6, 3352805.6, 3357621.6, 3359568.16, 3359601.76, 3359633.28, 3359646.08, 3359658.88, 3359665.92, 3359669.12, 3359672.73, 3359680, 3695648, 7391296, 11086944, 14782592, 18478240
+/
+&time
+   timefmt = 2
+   start = '2010-07-02 00:00:00'
+   stop = '2023-06-30 00:00:00'
+   dt = 3600
+   num_days = 200
+/
+&output
+   out_dir = 'output'
+   out_fn = 'output'
+   nsave = 24
+   csv_lake_fname = 'lake'
+   csv_point_nlevs = 1
+   csv_point_fname = 'WQ_'
+   csv_point_at = 2
+   csv_point_nvars = 2
+   csv_point_vars = 'temp','salt'
+/
+&init_profiles
+   lake_depth = 38.72
+   num_depths = 2
+   the_depths = 0, 38.72
+   the_temps = 10, 10
+   the_sals = 0, 0
+/
+&meteorology
+   met_sw = .true.
+   lw_type = 'LW_IN'
+   rain_sw = .false.
+   atm_stab = 0
+   albedo_mode = 1
+   cloud_mode = 2
+   fetch_mode = 0
+   subdaily = .false.
+   meteo_fl = 'bcs/meteo_glm.csv'
+   wind_factor = 1
+   sw_factor = 1
+   lw_factor = 1
+   at_factor = 1
+   rh_factor = 1
+   rain_factor = 1
+   ce = 0.0013
+   ch = 0.0013
+   cd = 0.0013
+/
+&light
+   light_mode = 0
+   n_bands = 4
+   light_extc = 1, 0.5, 2, 4
+   energy_frac = 0.51, 0.45, 0.035, 0.005
+   Benthic_Imin = 10
+   Kw = 0.421166
+/
+&bird_model
+   AP = 973
+   Oz = 0.279
+   WatVap = 1.1
+   AOD500 = 0.033
+   AOD380 = 0.038
+   Albedo = 0.2
+/
+&inflow
+   num_inflows = 10
+   names_of_strms = 'NZS4091209','NZS4091442','NZS4091091','NZS4092003','NZS4092701','NZS4092540','NZS4092786','NZS4092016','lumped','precip'
+   strm_hf_angle = 80, 80, 80, 80, 80, 80, 80, 80, 80, 80
+   strmbd_slope = 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5
+   strmbd_drag = 0.016, 0.016, 0.016, 0.016, 0.016, 0.016, 0.016, 0.016, 0.016, 0.016
+   inflow_factor = 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+   inflow_fl = 'bcs/inflow_NZS4091209.csv','bcs/inflow_NZS4091442.csv','bcs/inflow_NZS4091091.csv','bcs/inflow_NZS4092003.csv','bcs/inflow_NZS4092701.csv','bcs/inflow_NZS4092540.csv','bcs/inflow_NZS4092786.csv','bcs/inflow_NZS4092016.csv','bcs/inflow_lumped.csv','bcs/inflow_precip.csv'
+   inflow_varnum = 19
+   inflow_vars = 'flow','temp','salt','OXY_oxy','PHS_frp','OGM_dop','OGM_pop','PHS_frp_ads','NIT_amm','NIT_nit','OGM_don','OGM_pon','OGM_doc','OGM_poc','SIL_rsi','PHY_cyano','PHY_green','PHY_diatom','NCS_ss1'
+   coef_inf_entrain = 0
+/
+&outflow
+   num_outlet = 1
+   outlet_type = 2
+   flt_off_sw = .true.
+   outl_elvs = 41.82
+   bsn_len_outl = 4351.12
+   bsn_wid_outl = 4325.74
+   outflow_fl = 'bcs/outflow_wbal.csv'
+   outflow_factor = 1
+   seepage = .true.
+   seepage_rate = 0
+/
+&sediment
+   sed_heat_Ksoil = 1.2
+   sed_temp_depth = 0.2
+   sed_temp_mean = 10
+   sed_temp_amplitude = 4
+   sed_temp_peak_doy = 10
+   benthic_mode = 2
+   n_zones = 1
+   zone_heights = 0.72
+   sed_reflectivity = 0.1
+   sed_roughness = 0.1
+/
+&snowice
+   snow_albedo_factor = 1
+   snow_rho_max = 300
+   snow_rho_min = 50
+/

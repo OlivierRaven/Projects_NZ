@@ -1,0 +1,2 @@
+Data_raw/Maps/mfe-river-environment-classification-new-zealand-2010-SHP/river-environment-classification-new-zealand-2010.dbf filter=lfs diff=lfs merge=lfs -text
+Data_raw/Maps/mfe-river-environment-classification-new-zealand-2010-SHP/river-environment-classification-new-zealand-2010.shp filter=lfs diff=lfs merge=lfs -text

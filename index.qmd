@@ -1,0 +1,210 @@
+---
+title: "Making Maps and Analyses of Aotearoa New Zealand"
+author: "Olivier Raven"
+date: "2024-11-23"
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Global setup
+```{r}
+cat("\014")
+rm(list = ls())
+
+setwd("~/Documents/R/NZ_Projects")
+
+packages <- c(
+  "sf",
+  "ggplot2",
+  "tidyverse",
+  "dplyr",
+  "readr",
+  "readxl",
+  "nzffdr",
+  "gridExtra",
+  "rnaturalearth",
+  "pak"
+)
+
+lapply(packages, function(pkg) {
+  if (!requireNamespace(pkg, quietly = TRUE)) {
+    install.packages(pkg, dependencies = TRUE)
+  }
+  library(pkg, character.only = TRUE)
+})
+
+pak::pak("limnotrack/AEME")
+
+```
+
+# NZ map
+```{r}
+Coastline <- st_read(
+  "Data_raw/Maps/nz-coastlines-topo-150k/nz-coastlines-topo-150k.shp"
+)
+Lakes <- st_read(
+  "Data_raw/Maps/nz-lake-polygons-topo-150k/nz-lake-polygons-topo-150k.shp"
+)
+
+Lakes_geo <- st_transform(Lakes, crs = 4326)
+lakes_points <- st_centroid(Lakes_geo)
+
+ggplot() +
+  geom_sf(data = Lakes, fill = "blue") +
+  geom_sf(data = Coastline, color = "black") +
+  geom_sf(data = lakes_points, aes(colour = elevation))
+
+```
+
+# NZFFD
+```{r}
+nzffdms <- read_csv("Data_raw/NZffd/nzffdms.csv")
+
+nzffd_clean <- nzffdr_clean(nzffdms)
+nzffd_clean <- nzffdr_add_dates(nzffd_clean)
+nzffd_enhanced <- nzffdr_taxon_threat(nzffd_clean)
+
+nzffd_habitat <- nzffdr_widen_habitat(
+  nzffd_enhanced,
+  cols_to_expand = c("habitatFlowPercent", "habitatSubstratePercent")
+)
+
+ggplot(data = nzffdr_nzmap) +
+  geom_sf(aes(geometry = geometry))
+
+ggplot(
+  nzffd_enhanced %>%
+    filter(taxonCommonName == "Koaro") %>%
+    group_by(year) %>%
+    summarise(total_count = sum(totalCount, na.rm = TRUE)),
+  aes(x = year, y = total_count)
+) +
+  geom_bar(stat = "identity")
+
+fish_data_sf <- st_as_sf(
+  nzffd_enhanced,
+  coords = c("eastingNZTM", "northingNZTM"),
+  crs = 2193
+)
+
+fish_summary <- fish_data_sf %>%
+  group_by(catchmentNumber) %>%
+  summarise(
+    total_abundance = sum(totalCount, na.rm = TRUE),
+    species_richness = n_distinct(taxonCommonName)
+  ) %>%
+  ungroup()
+
+ggplot() +
+  geom_sf(data = fish_summary, aes(color = total_abundance)) +
+  scale_color_viridis_c(option = "plasma", na.value = "grey80")
+
+ggplot() +
+  geom_sf(data = fish_summary, aes(colour = species_richness)) +
+  scale_color_viridis_c(option = "magma", na.value = "grey80")
+
+significant_catchments <- fish_summary %>%
+  mutate(
+    is_significant = species_richness >=
+      quantile(species_richness, 0.9, na.rm = TRUE)
+  )
+
+ggplot() +
+  geom_sf(data = significant_catchments, aes(colour = is_significant)) +
+  scale_color_manual(values = c("TRUE" = "darkgreen", "FALSE" = "grey80"))
+
+```
+
+# nzffd_koura
+```{r}
+nzffd_koura <- nzffd_enhanced %>%
+  filter(taxonCommonName == "Koura")
+
+ggplot(nzffd_koura, aes(eastingNZTM, northingNZTM, col = totalCount)) +
+  geom_point()
+
+nzffd_koura_sf <- st_as_sf(
+  nzffd_koura,
+  coords = c("eastingNZTM", "northingNZTM"),
+  crs = 2193
+)
+
+ggplot(nzffd_koura_sf) +
+  geom_sf(aes(colour = year))
+
+```
+
+# LAWA data
+```{r}
+lawa_lake <- read_excel(
+  "Data_raw/Lawa/lawa-lake-monitoring-data-2004-2023_statetrendtli-results_sep2024.xlsx",
+  sheet = "Monitoring Dataset (2004-2023)"
+)
+
+lawa_lake_clean <- lawa_lake %>%
+  group_by(LawaSiteID, Indicator) %>%
+  mutate(
+    Q1 = quantile(Value, 0.25),
+    Q3 = quantile(Value, 0.75),
+    IQR = Q3 - Q1,
+    LowerBound = Q1 - 1.5 * IQR,
+    UpperBound = Q3 + 1.5 * IQR
+  ) %>%
+  filter(Value >= LowerBound & Value <= UpperBound) %>%
+  select(-Q1, -Q3, -IQR, -LowerBound, -UpperBound)
+
+
+```
+
+# LERNZmp & AEME modelling
+```{r}
+lid_files <- c(
+  "LID11133",
+  "LID14290",
+  "LID15325",
+  "LID40102",
+  "LID40188",
+  "LID54730"
+)
+metadata <- read.csv("lernzmp/LERNZmp_lake_metadata.csv") %>%
+  filter(aeme_file %in% lid_files)
+
+aeme_list <- lapply(lid_files, function(lid) {
+  readRDS(paste0("Data_raw/lernzmp/", lid, ".rds"))
+})
+
+hypsograph_data <- data.frame()
+
+for (i in seq_along(aeme_list)) {
+  aeme <- build_aeme(
+    aeme_list[[i]],
+    model = c("glm_aed", "gotm_wet"),
+    path = "aeme",
+    use_aeme = TRUE,
+    use_bgc = TRUE
+  )
+  aeme <- run_aeme(
+    aeme,
+    model = c("glm_aed", "gotm_wet"),
+    path = "aeme",
+    parallel = TRUE
+  )
+
+  hyps <- input(aeme)$hypsograph %>%
+    filter(depth <= 0)
+
+  lake_meta <- metadata[i, ]
+  hyps$lake_name <- lake_meta$Name
+
+  hypsograph_data <- rbind(hypsograph_data, hyps)
+}
+
+ggplot(hypsograph_data, aes(area / 10000, depth)) +
+  geom_line() +
+  facet_wrap(~lake_name, scales = "free") +
+  labs(x = "Area (ha)", y = "Depth (m)")
+
+```

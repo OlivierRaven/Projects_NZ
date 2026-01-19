@@ -38,6 +38,11 @@ lapply(packages, function(pkg) {
 
 pak::pak("limnotrack/AEME")
 
+options(
+  repos = c(CRAN = "https://cloud.r-project.org"),
+  stringsAsFactors = FALSE
+)
+
 ```
 
 # NZ map
@@ -169,7 +174,7 @@ lid_files <- c(
   "LID40188",
   "LID54730"
 )
-metadata <- read.csv("lernzmp/LERNZmp_lake_metadata.csv") %>%
+metadata <- read.csv("Data_raw/lernzmp/LERNZmp_lake_metadata.csv") %>%
   filter(aeme_file %in% lid_files)
 
 aeme_list <- lapply(lid_files, function(lid) {

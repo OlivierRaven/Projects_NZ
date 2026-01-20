@@ -13,8 +13,7 @@ execute:
 ```{r}
 cat("\014")
 rm(list = ls())
-
-setwd("~/Documents/R/NZ_Projects")
+getwd()
 
 packages <- c(
   "sf",
@@ -45,25 +44,6 @@ options(
 
 ```
 
-# NZ map
-```{r}
-Coastline <- st_read(
-  "Data_raw/Maps/nz-coastlines-topo-150k/nz-coastlines-topo-150k.shp"
-)
-Lakes <- st_read(
-  "Data_raw/Maps/nz-lake-polygons-topo-150k/nz-lake-polygons-topo-150k.shp"
-)
-
-Lakes_geo <- st_transform(Lakes, crs = 4326)
-lakes_points <- st_centroid(Lakes_geo)
-
-ggplot() +
-  geom_sf(data = Lakes, fill = "blue") +
-  geom_sf(data = Coastline, color = "black") +
-  geom_sf(data = lakes_points, aes(colour = elevation))
-
-```
-
 # NZFFD
 ```{r}
 nzffdms <- read_csv("Data_raw/NZffd/nzffdms.csv")
@@ -72,10 +52,7 @@ nzffd_clean <- nzffdr_clean(nzffdms)
 nzffd_clean <- nzffdr_add_dates(nzffd_clean)
 nzffd_enhanced <- nzffdr_taxon_threat(nzffd_clean)
 
-nzffd_habitat <- nzffdr_widen_habitat(
-  nzffd_enhanced,
-  cols_to_expand = c("habitatFlowPercent", "habitatSubstratePercent")
-)
+#nzffd_habitat <- nzffdr::nzffdr_widen_habitat(nzffd_enhanced,cols_to_expand = c("habitatFlowPercent", "habitatSubstratePercent"))
 
 ggplot(data = nzffdr_nzmap) +
   geom_sf(aes(geometry = geometry))
@@ -127,9 +104,6 @@ ggplot() +
 ```{r}
 nzffd_koura <- nzffd_enhanced %>%
   filter(taxonCommonName == "Koura")
-
-ggplot(nzffd_koura, aes(eastingNZTM, northingNZTM, col = totalCount)) +
-  geom_point()
 
 nzffd_koura_sf <- st_as_sf(
   nzffd_koura,

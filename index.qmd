@@ -46,7 +46,7 @@ options(
 
 # NZFFD
 ```{r}
-nzffdms <- read_csv("Data_raw/NZffd/nzffdms.csv")
+nzffdms <- read_csv("data/data_raw/NZffd/nzffdms.csv")
 
 nzffd_clean <- nzffdr_clean(nzffdms)
 nzffd_clean <- nzffdr_add_dates(nzffd_clean)
@@ -118,10 +118,8 @@ ggplot(nzffd_koura_sf) +
 
 # LAWA data
 ```{r}
-lawa_lake <- read_excel(
-  "Data_raw/Lawa/lawa-lake-monitoring-data-2004-2023_statetrendtli-results_sep2024.xlsx",
-  sheet = "Monitoring Dataset (2004-2023)"
-)
+lawa_lake <- read_excel("data/data_raw/Lawa/lawa-lake-monitoring-data-2004-2023_statetrendtli-results_sep2024.xlsx",
+  sheet = "Monitoring Dataset (2004-2023)")
 
 lawa_lake_clean <- lawa_lake %>%
   group_by(LawaSiteID, Indicator) %>%
@@ -148,11 +146,11 @@ lid_files <- c(
   "LID40188",
   "LID54730"
 )
-metadata <- read.csv("Data_raw/lernzmp/LERNZmp_lake_metadata.csv") %>%
+metadata <- read.csv("data/data_raw/lernzmp/LERNZmp_lake_metadata.csv") %>%
   filter(aeme_file %in% lid_files)
 
 aeme_list <- lapply(lid_files, function(lid) {
-  readRDS(paste0("Data_raw/lernzmp/", lid, ".rds"))
+  readRDS(paste0("data/data_raw/lernzmp/", lid, ".rds"))
 })
 
 hypsograph_data <- data.frame()

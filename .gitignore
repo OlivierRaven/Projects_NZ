@@ -4,3 +4,17 @@
 .Ruserdata
 .pub
 private
+*.rds
+*.nml
+*.yaml
+*.bio
+*.chm
+*.sed
+*.par
+*.cfg
+*.inf
+*.met
+*.pro
+*.stg
+*.wdr
+*.dat
